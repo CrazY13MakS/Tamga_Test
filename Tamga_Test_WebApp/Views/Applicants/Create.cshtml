@@ -33,13 +33,15 @@
                 <span asp-validation-for="Phone" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PretendetSalary" class="control-label"></label>
-                <input asp-for="PretendetSalary" class="form-control" />
-                <span asp-validation-for="PretendetSalary" class="text-danger"></span>
+                <label asp-for="PretendedSalary" class="control-label"></label>
+                <input asp-for="PretendedSalary" class="form-control" onkeyup="ChangePretendetSalary(event)" min="0" max="99999999999" />
+                <span asp-validation-for="PretendedSalary" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="positionsGroup">
                 <label asp-for="PositionId" class="control-label"></label>
-                <select asp-for="PositionId" class ="form-control" asp-items="ViewBag.PositionId"></select>
+                <select asp-for="PositionId" id="positionsSelect" class="form-control" asp-items="ViewBag.PositionId">
+                    <option value=""> Выберите позицию из имеющихся</option>
+                </select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
@@ -54,4 +56,80 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+
+    <script type="text/javascript">
+        function ChangePretendetSalary(e) {
+
+            var value = e.target.value;
+            var listGroup = $("#positionsGroup");
+            $("#positionsSelect").find('option').not(':first').remove();
+            if (value === "") {
+                listGroup.hide(333);
+            }
+            else {
+                var positions = GetPositionsBySalary(value);
+                if (positions.length > 0) {
+
+                    UpdateSelectList(positions);
+                    listGroup.show(333);
+                }
+                else {
+                    listGroup.hide(333);
+                }
+                //UpdateSelectList($("#positionsSelect"), value);
+                //if (listGroup.not(':visible')) {
+                //    listGroup.show(333);
+                //}
+            }
+            console.log(value);
+        }
+        function UpdateSelectList(data) {
+
+            $.each(data, function (key, item) {
+                console.log(control);
+                $("#positionsSelect").append($('<option>', {
+                    value: item.positionId,
+                    text: item.name
+                }));
+            });
+        }
+        function GetPositionsBySalary(salary) {
+
+            $.ajax({
+                url: "/Applicants/GetPositionsBySalary",
+                type: "GET",
+                data: { salary: salary },
+                success: function (data) {
+                    return data;
+                  
+                },
+                error: function (err) { return []; }
+            })
+        }
+        //function UpdateSelectList(control, salary) {
+
+        //    $.ajax({
+        //        url: "/Applicants/GetPositionsBySalary",
+        //        type: "GET",
+        //        data: { salary: salary },
+        //        success: function (data) {
+        //            if (data.length == 0) {
+        //                $("#positionsGroup").hide(333);
+        //            }
+        //            console.log(data);                    
+        //            $.each(data, function (key, item) {
+        //                console.log(control);
+        //                $(control).append($('<option>', {
+        //                    value: item.positionId,
+        //                    text: item.name
+        //                }));
+        //            });
+        //        },
+        //        error: function (err) { console.log(err); }
+        //    })
+        //}
+    </script>
 }
+

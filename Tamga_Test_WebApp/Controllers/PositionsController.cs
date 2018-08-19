@@ -48,6 +48,7 @@ namespace Tamga_Test_WebApp.Controllers
         // GET: Positions/Create
         public IActionResult Create()
         {
+            ViewBag.ShowCompanies = _context.Companies.Any();
             ViewData["CompanyId"] = new SelectList(_context.Companies, "CompanyId", "Address");
             return View();
         }

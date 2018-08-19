@@ -52,12 +52,25 @@ namespace Tamga_Test_WebApp.Controllers
             return View();
         }
 
+
+
+        [HttpGet]      
+        public async Task<IActionResult> GetPositionsBySalary(int salary)
+        {
+            var positions =await _context.Positions
+                                         .Where(x => x.SalaryForkMin <= salary && x.SalaryForkMax >= salary)
+                                         .Include(x => x.Company)
+                                         .ToListAsync();
+            return Json(positions);
+        }
+
+
         // POST: Applicants/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ApplicantId,Name,LastName,Age,Phone,PretendetSalary,PositionId")] Applicant applicant)
+        public async Task<IActionResult> Create([Bind("ApplicantId,Name,LastName,Age,Phone,PretendedSalary,PositionId")] Applicant applicant)
         {
             if (ModelState.IsValid)
             {
@@ -91,7 +104,7 @@ namespace Tamga_Test_WebApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ApplicantId,Name,LastName,Age,Phone,PretendetSalary,PositionId")] Applicant applicant)
+        public async Task<IActionResult> Edit(int id, [Bind("ApplicantId,Name,LastName,Age,Phone,PretendedSalary,PositionId")] Applicant applicant)
         {
             if (id != applicant.ApplicantId)
             {

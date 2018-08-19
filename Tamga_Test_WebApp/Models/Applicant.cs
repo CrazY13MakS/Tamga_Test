@@ -31,7 +31,7 @@ namespace Tamga_Test_WebApp.Models
         public String Phone { get; set; }
 
         [Required]
-        public int PretendetSalary { get; set; }
+        public int PretendedSalary { get; set; }
 
         public int? PositionId { get; set; }
         public Position Position { get; set; }

@@ -27,10 +27,14 @@
                 <input asp-for="SalaryForkMax" class="form-control" />
                 <span asp-validation-for="SalaryForkMax" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CompanyId" class="control-label"></label>
-                <select asp-for="CompanyId" class ="form-control" asp-items="ViewBag.CompanyId"></select>
-            </div>
+            @* Hide field if companies count equal 0*@
+            @if (ViewBag.ShowCompanies)
+            {
+                <div class="form-group">
+                    <label asp-for="CompanyId" class="control-label"></label>
+                    <select asp-for="CompanyId" class="form-control" asp-items="ViewBag.CompanyId"></select>
+                </div>
+            }
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>
