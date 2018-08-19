@@ -10,23 +10,26 @@ using Tamga_Test_WebApp.Models;
 
 namespace Tamga_Test_WebApp.Controllers
 {
-    public class ApplicantsController : Controller
+    public class EmployeesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ApplicantsController(ApplicationDbContext context)
+        public EmployeesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Applicants
+        // GET: Employees
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Applicants.Include(a => a.Position);
-            return View(await applicationDbContext.ToListAsync());
+            ViewBag.Applicants = new SelectList(_context.Applicants, "ApplicantId", "Name");
+            // var applicationDbContext = _context.Employees.Include(e => e.Applicant).Include(e => e.Company);
+            // return View(await applicationDbContext.ToListAsync());
+            var applicants =await _context.Applicants.ToListAsync();
+            return View(applicants);
         }
 
-        // GET: Applicants/Details/5
+        // GET: Employees/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,46 +37,45 @@ namespace Tamga_Test_WebApp.Controllers
                 return NotFound();
             }
 
-            var applicant = await _context.Applicants
-                .Include(a => a.Position)
+            var employee = await _context.Employees
+                .Include(e => e.Applicant)
+                .Include(e => e.Company)
                 .FirstOrDefaultAsync(m => m.ApplicantId == id);
-            if (applicant == null)
+            if (employee == null)
             {
                 return NotFound();
             }
 
-            return View(applicant);
+            return View(employee);
         }
 
-        // GET: Applicants/Create
+        // GET: Employees/Create
         public IActionResult Create()
         {
-            ViewData["PositionId"] = new SelectList(_context.Positions, "PositionId", "Name");
+            ViewData["ApplicantId"] = new SelectList(_context.Applicants, "ApplicantId", "LastName");
+            ViewData["CompanyId"] = new SelectList(_context.Companies, "CompanyId", "Address");
             return View();
         }
 
-
-
-
-
-        // POST: Applicants/Create
+        // POST: Employees/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ApplicantId,Name,LastName,Age,Phone,PretendedSalary,PositionId")] Applicant applicant)
+        public async Task<IActionResult> Create([Bind("CompanyId,ApplicantId")] Employee employee)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(applicant);
+                _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PositionId"] = new SelectList(_context.Positions, "PositionId", "Name", applicant.PositionId);
-            return View(applicant);
+            ViewData["ApplicantId"] = new SelectList(_context.Applicants, "ApplicantId", "LastName", employee.ApplicantId);
+            ViewData["CompanyId"] = new SelectList(_context.Companies, "CompanyId", "Address", employee.CompanyId);
+            return View(employee);
         }
 
-        // GET: Applicants/Edit/5
+        // GET: Employees/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -81,23 +83,24 @@ namespace Tamga_Test_WebApp.Controllers
                 return NotFound();
             }
 
-            var applicant = await _context.Applicants.FindAsync(id);
-            if (applicant == null)
+            var employee = await _context.Employees.FindAsync(id);
+            if (employee == null)
             {
                 return NotFound();
             }
-            ViewData["PositionId"] = new SelectList(_context.Positions, "PositionId", "Name", applicant.PositionId);
-            return View(applicant);
+            ViewData["ApplicantId"] = new SelectList(_context.Applicants, "ApplicantId", "LastName", employee.ApplicantId);
+            ViewData["CompanyId"] = new SelectList(_context.Companies, "CompanyId", "Address", employee.CompanyId);
+            return View(employee);
         }
 
-        // POST: Applicants/Edit/5
+        // POST: Employees/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ApplicantId,Name,LastName,Age,Phone,PretendedSalary,PositionId")] Applicant applicant)
+        public async Task<IActionResult> Edit(int id, [Bind("CompanyId,ApplicantId")] Employee employee)
         {
-            if (id != applicant.ApplicantId)
+            if (id != employee.ApplicantId)
             {
                 return NotFound();
             }
@@ -106,12 +109,12 @@ namespace Tamga_Test_WebApp.Controllers
             {
                 try
                 {
-                    _context.Update(applicant);
+                    _context.Update(employee);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ApplicantExists(applicant.ApplicantId))
+                    if (!EmployeeExists(employee.ApplicantId))
                     {
                         return NotFound();
                     }
@@ -122,11 +125,12 @@ namespace Tamga_Test_WebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PositionId"] = new SelectList(_context.Positions, "PositionId", "Name", applicant.PositionId);
-            return View(applicant);
+            ViewData["ApplicantId"] = new SelectList(_context.Applicants, "ApplicantId", "LastName", employee.ApplicantId);
+            ViewData["CompanyId"] = new SelectList(_context.Companies, "CompanyId", "Address", employee.CompanyId);
+            return View(employee);
         }
 
-        // GET: Applicants/Delete/5
+        // GET: Employees/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -134,31 +138,32 @@ namespace Tamga_Test_WebApp.Controllers
                 return NotFound();
             }
 
-            var applicant = await _context.Applicants
-                .Include(a => a.Position)
+            var employee = await _context.Employees
+                .Include(e => e.Applicant)
+                .Include(e => e.Company)
                 .FirstOrDefaultAsync(m => m.ApplicantId == id);
-            if (applicant == null)
+            if (employee == null)
             {
                 return NotFound();
             }
 
-            return View(applicant);
+            return View(employee);
         }
 
-        // POST: Applicants/Delete/5
+        // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var applicant = await _context.Applicants.FindAsync(id);
-            _context.Applicants.Remove(applicant);
+            var employee = await _context.Employees.FindAsync(id);
+            _context.Employees.Remove(employee);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ApplicantExists(int id)
+        private bool EmployeeExists(int id)
         {
-            return _context.Applicants.Any(e => e.ApplicantId == id);
+            return _context.Employees.Any(e => e.ApplicantId == id);
         }
     }
 }

@@ -92,16 +92,73 @@
         </ul>
     </div>
 </div>
-<input id="aa" type="text" value="+380"/>
-@section Scripts{ 
-    <script src="~/js/jquery.mask.js"></script>
-    <script>
-        $('#aa').mask('+380ZZZZZZZZZ', {
-            translation: {
-                'Z': {
-                    pattern: /[0-9]/, optional: false
+<input id="aa" type="text" /><br />
+<input data-inputmask="'mask': '99-9999999'" />
+
+<br />
+<div id='jqxListBox'></div>
+<div>
+    <input style="margin-top: 20px;" type="button" id='jqxButton' value="Show the selected index" />
+</div>
+@section Scripts{
+    @*<script src="~/js/jquery.mask.js"></script>
+        <script>
+            $('#aa').mask('+380ZZZZZZZZZ', {
+                translation: {
+                    'Z': {
+                        pattern: /[0-9]/, optional: false
+                    }
                 }
-            }
+            });
+        </script>*@
+
+    <script src="~/dist/inputmask/inputmask.js"></script>
+    <script src="~/dist/inputmask/inputmask.extensions.js"></script>
+    <script src="~/dist/inputmask/inputmask.numeric.extensions.js"></script>
+    <script src="~/dist/inputmask/inputmask.date.extensions.js"></script>
+    <script src="~/dist/inputmask/inputmask.phone.extensions.js"></script>
+    <script src="~/dist/inputmask/jquery.inputmask.js"></script>
+    <script src="~/dist/inputmask/phone-codes/phone.js"></script>
+    <script src="~/dist/inputmask/phone-codes/phone-be.js"></script>
+    <script src="~/dist/inputmask/phone-codes/phone-ru.js"></script>
+    <script>
+        $(document).ready(function () {
+            Inputmask("+380999999999").mask($("#aa"));
+            var source = [
+                "Affogato",
+                "Americano",
+                "Bicerin",
+                "Breve",
+                "Café Bombón",
+                "Café au lait",
+                "Caffé Corretto",
+                "Café Crema",
+                "Caffé Latte"];
+
+            // Create a jqxListBox
+            $("#jqxListBox").jqxListBox({
+                source: source,
+                theme: 'energyblue',
+                width: '200px',
+                height: '250px',
+                selectedIndex: 0
+            });
+            $("#jqxButton").jqxButton({
+                theme: 'energyblue'
+            });
+            $('#jqxButton').on('click', function () {
+                var index = $("#jqxListBox").jqxListBox('getSelectedIndex');
+                alert("Selected Index: " + index);
+            });
         });
     </script>
+
+
+    <script>
+       
+    </script>
+
+
+
+
 }

@@ -1,0 +1,136 @@
+﻿@model IEnumerable<Tamga_Test_WebApp.Models.Applicant>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+@*<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Company)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Applicant)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Company.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Applicant.LastName)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>*@
+
+
+<div class="container">
+    <div class="col-md-6">
+        <div class="col-md-12">
+            <div class="aplicantInfo">
+                <dl class="dl-horizontal">
+                    <dt>
+                        Имя 
+                    </dt>
+                    <dd id="name">
+                        Имя 
+                    </dd>
+                    <dt >
+                        Фамилия 
+                    </dt>
+                    <dd id="lastName">
+                       
+                    </dd>
+                    <dt>
+                       Возраст
+                    </dt>
+                    <dd id="age">
+                       
+                    </dd>
+                    <dt>
+                        Телефон
+                    </dt>
+                    <dd id="phone">
+                       
+                    </dd>
+                    <dt>
+                        Желаемая зарплата
+                    </dt>
+                    <dd id="salary">
+                     
+                    </dd>
+                    <dt>
+                       Желаемая позиция
+                    </dt>
+                    <dd id="position">
+                       
+                    </dd>
+                </dl>
+            </div>
+
+        </div>
+        <div class="col-md-12">
+
+        </div>
+    </div>
+    <div class="col-md-6">
+        @*<select  id="positionsSelect" class="form-control" asp-items="ViewBag.Applicants" onselect="SelectedIndexChanged(event)">
+
+        </select>*@
+        <div class="list-group">
+            @foreach (var item in Model)
+            {
+            <a href="#" class="list-group-item waves-light" data-applicantId="@item.ApplicantId">@item.Name  @item.LastName</a>
+
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts{ 
+    <script>
+        $('.list-group-item').on('click', function (e) {
+            var previous = $(this).closest(".list-group").children(".active");
+            previous.removeClass('active'); // previous list-item
+            $(e.target).addClass('active'); // activated list-item
+            console.log(e.target);
+        });
+        function SelectedApplicantChanged(id) { 
+
+            $.ajax({
+                url: "/Applicants/GetApplicantById",
+                type: "GET",
+                data: { id: id },
+                success: function (data) {
+                    UpdateSelectList(data);
+                },
+                error: function (err) { console.log(err); }
+            });
+        }
+        function UpdateSelectedApplicantInfo(info) {
+            $("#name").val(info.name);
+            $("#lastName").val(info.lastName);
+            $("#phone").val(info.phone);
+            $("#salary").val(info.pretendedSalary);
+            $("#position").val(info.position);
+        }
+
+    </script>
+}

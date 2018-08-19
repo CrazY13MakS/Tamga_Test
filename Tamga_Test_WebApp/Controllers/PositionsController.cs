@@ -45,6 +45,21 @@ namespace Tamga_Test_WebApp.Controllers
             return View(position);
         }
 
+        /// <summary>
+        /// Get positions from db where pretendet salary between salary fork min and max
+        /// </summary>
+        /// <param name="salary"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> GetPositionsBySalary(int salary)
+        {
+            var positions = await _context.Positions
+                                         .Where(x => x.SalaryForkMin <= salary && x.SalaryForkMax >= salary)
+                                         .Include(x => x.Company)
+                                         .ToListAsync();
+            return Json(positions);
+        }
+
         // GET: Positions/Create
         public IActionResult Create()
         {
