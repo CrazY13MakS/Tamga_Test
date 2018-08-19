@@ -25,5 +25,7 @@ namespace Tamga_Test_WebApp.Models
         public String Phone { get; set; }
 
         public List<Position> Positions { get; set; }
+
+        public List<Employee> Employees { get; set; }
     }
 }

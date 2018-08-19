@@ -27,5 +27,7 @@ namespace Tamga_Test_WebApp.Models
         public int? CompanyId { get; set; }
 
         public Company Company { get; set; }
+
+        public List<Applicant> Applicants { get; set; }
     }
 }

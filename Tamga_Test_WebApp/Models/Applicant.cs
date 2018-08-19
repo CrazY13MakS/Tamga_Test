@@ -36,6 +36,6 @@ namespace Tamga_Test_WebApp.Models
         public int? PositionId { get; set; }
         public Position Position { get; set; }
 
-        public Employee Employee { get; set; }
+        public List<Employee> Employees { get; set; }
     }
 }
