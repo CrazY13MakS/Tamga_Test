@@ -116,18 +116,28 @@
            // console.log(e.target.attributes.getNamedItem("data-applicantId"));
             SelectedApplicantChanged(e.target.attributes.getNamedItem("data-applicantId").value);
         });
-
+        $(document).on('click', '#positionsList .list-group-item', function (e) {
+            var previous = $(this).closest(".list-group").children(".active");
+            previous.removeClass('active'); // previous list-item
+            $(e.target).addClass('active'); // activated list-item
+        });
+        //$('#positionsList .list-group-item').on('click', function (e) {
+        //    var previous = $(this).closest(".list-group").children(".active");
+        //    previous.removeClass('active'); // previous list-item
+        //    $(e.target).addClass('active'); // activated list-item
+        //});
         function SelectedApplicantChanged(id) {
             console.log(id+"    LAlsals");
             $.ajax({
                 url: "/Applicants/GetApplicantById",
                 type: "GET",
                 data: { id: id },
-                success: function (data) {                  
+                success: function (data) {
+                    console.log(data);
                     UpdateSelectedApplicantInfo(data);
                     UpdatePositions(data.pretendedSalary);
                 },
-                error: function (err) { console.log(err); }
+                error: function (err) { console.log("ERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"); console.log(err); }
             });
         }
 
@@ -140,7 +150,7 @@
                 success: function (data) {
                     UpdatePositionsList(data);
                 },
-                error: function (err) { console.log(err); }
+                error: function (err) { console.log("ERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR POSITION"); console.log(err); }
             })
 
         }
@@ -148,8 +158,9 @@
         function UpdatePositionsList(data) {
             console.log(data);
             $.each(data, function (key, item) {
-                $("#positionsList").append($('<div>', {
-                    text: item.name
+                $("#positionsList").append($('<a>', {
+                    text: item.name,
+                    href:"#"
                 }).addClass("list-group-item waves-light").attr("data-positionId", item.positionId))
             });
         }

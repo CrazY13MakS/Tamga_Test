@@ -38,7 +38,7 @@ namespace Tamga_Test_WebApp.Controllers
         {
             if (ApplicantExists(id))
             {
-                var applicant = await _context.Applicants.Include(x=>x.Position).FirstOrDefaultAsync(x => x.ApplicantId == id);
+                var applicant =await _context.Applicants.Include(x=>x.Position).Include(x=>x.Employees).FirstOrDefaultAsync(x => x.ApplicantId == id);
                 var res = new
                 {
                     applicant.ApplicantId,
@@ -48,9 +48,11 @@ namespace Tamga_Test_WebApp.Controllers
                     applicant.Phone,
                     isEmployed = applicant.Employees.Any(),
                     applicant.PretendedSalary,
-                    position = applicant.Position ?? new Position()
+                    position = applicant.Position?.Name
                 };
-                return Json(res);
+
+                int a = 122;
+                return  Json(res);
             }
             return NotFound();
         }

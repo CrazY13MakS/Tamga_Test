@@ -55,7 +55,7 @@ namespace Tamga_Test_WebApp.Controllers
         {
             var positions = await _context.Positions
                                          .Where(x => x.SalaryForkMin <= salary && x.SalaryForkMax >= salary)
-                                         .Include(x => x.Company)
+                                         //.Include(x => x.Company)
                                          .ToListAsync();
             return Json(positions);
         }
