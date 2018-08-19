@@ -60,6 +60,9 @@
 
 
     <script type="text/javascript">
+        $(document).ready(function () { 
+            $("#positionsGroup").hide();
+        })
         function ChangePretendetSalary(e) {
 
             var value = e.target.value;
@@ -69,15 +72,8 @@
                 listGroup.hide(333);
             }
             else {
-                var positions = GetPositionsBySalary(value);
-                if (positions.length > 0) {
 
-                    UpdateSelectList(positions);
-                    listGroup.show(333);
-                }
-                else {
-                    listGroup.hide(333);
-                }
+                GetPositionsBySalary(value);
                 //UpdateSelectList($("#positionsSelect"), value);
                 //if (listGroup.not(':visible')) {
                 //    listGroup.show(333);
@@ -87,13 +83,20 @@
         }
         function UpdateSelectList(data) {
 
-            $.each(data, function (key, item) {
-                console.log(control);
-                $("#positionsSelect").append($('<option>', {
-                    value: item.positionId,
-                    text: item.name
-                }));
-            });
+            console.log(data);
+            if (data.length > 0) {              
+                $.each(data, function (key, item) {                    
+                    $("#positionsSelect").append($('<option>', {
+                        value: item.positionId,
+                        text: item.name
+                    }));
+                });
+                $("#positionsGroup").show(333);
+
+            }
+            else {
+                $("#positionsGroup").hide(333);
+            }
         }
         function GetPositionsBySalary(salary) {
 
@@ -102,34 +105,33 @@
                 type: "GET",
                 data: { salary: salary },
                 success: function (data) {
-                    return data;
-                  
+                    UpdateSelectList(data);
                 },
-                error: function (err) { return []; }
+                error: function (err) { console.log(err); }
             })
         }
-        //function UpdateSelectList(control, salary) {
+            //function UpdateSelectList(control, salary) {
 
-        //    $.ajax({
-        //        url: "/Applicants/GetPositionsBySalary",
-        //        type: "GET",
-        //        data: { salary: salary },
-        //        success: function (data) {
-        //            if (data.length == 0) {
-        //                $("#positionsGroup").hide(333);
-        //            }
-        //            console.log(data);                    
-        //            $.each(data, function (key, item) {
-        //                console.log(control);
-        //                $(control).append($('<option>', {
-        //                    value: item.positionId,
-        //                    text: item.name
-        //                }));
-        //            });
-        //        },
-        //        error: function (err) { console.log(err); }
-        //    })
-        //}
+            //    $.ajax({
+            //        url: "/Applicants/GetPositionsBySalary",
+            //        type: "GET",
+            //        data: { salary: salary },
+            //        success: function (data) {
+            //            if (data.length == 0) {
+            //                $("#positionsGroup").hide(333);
+            //            }
+            //            console.log(data);
+            //            $.each(data, function (key, item) {
+            //                console.log(control);
+            //                $(control).append($('<option>', {
+            //                    value: item.positionId,
+            //                    text: item.name
+            //                }));
+            //            });
+            //        },
+            //        error: function (err) { console.log(err); }
+            //    })
+            //}
     </script>
 }
 

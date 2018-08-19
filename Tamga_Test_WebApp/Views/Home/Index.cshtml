@@ -92,3 +92,16 @@
         </ul>
     </div>
 </div>
+<input id="aa" type="text" value="+380"/>
+@section Scripts{ 
+    <script src="~/js/jquery.mask.js"></script>
+    <script>
+        $('#aa').mask('+380ZZZZZZZZZ', {
+            translation: {
+                'Z': {
+                    pattern: /[0-9]/, optional: false
+                }
+            }
+        });
+    </script>
+}
