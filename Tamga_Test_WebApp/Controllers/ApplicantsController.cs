@@ -26,6 +26,37 @@ namespace Tamga_Test_WebApp.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+
+
+        /// <summary>
+        /// Get positions from db where pretendet salary between salary fork min and max
+        /// </summary>
+        /// <param name="salary"></param>
+        /// <returns>Json array(positions)</returns>
+        [HttpGet]
+        public async Task<IActionResult> GetApplicantById(int id)
+        {
+            if (ApplicantExists(id))
+            {
+                var applicant = await _context.Applicants.Include(x=>x.Position).FirstOrDefaultAsync(x => x.ApplicantId == id);
+                var res = new
+                {
+                    applicant.ApplicantId,
+                    applicant.Age,
+                    applicant.LastName,
+                    applicant.Name,
+                    applicant.Phone,
+                    isEmployed = applicant.Employees.Any(),
+                    applicant.PretendedSalary,
+                    position = applicant.Position ?? new Position()
+                };
+                return Json(res);
+            }
+            return NotFound();
+        }
+
+
+
         // GET: Applicants/Details/5
         public async Task<IActionResult> Details(int? id)
         {

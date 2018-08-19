@@ -49,7 +49,7 @@ namespace Tamga_Test_WebApp.Controllers
         /// Get positions from db where pretendet salary between salary fork min and max
         /// </summary>
         /// <param name="salary"></param>
-        /// <returns></returns>
+        /// <returns>Json array(positions)</returns>
         [HttpGet]
         public async Task<IActionResult> GetPositionsBySalary(int salary)
         {

@@ -47,54 +47,57 @@
             <div class="aplicantInfo">
                 <dl class="dl-horizontal">
                     <dt>
-                        Имя 
+                        Имя
                     </dt>
                     <dd id="name">
-                        Имя 
-                    </dd>
-                    <dt >
-                        Фамилия 
-                    </dt>
-                    <dd id="lastName">
-                       
+                        Имя
                     </dd>
                     <dt>
-                       Возраст
+                        Фамилия
+                    </dt>
+                    <dd id="lastName">
+
+                    </dd>
+                    <dt>
+                        Возраст
                     </dt>
                     <dd id="age">
-                       
+
                     </dd>
                     <dt>
                         Телефон
                     </dt>
                     <dd id="phone">
-                       
+
                     </dd>
                     <dt>
                         Желаемая зарплата
                     </dt>
                     <dd id="salary">
-                     
+
                     </dd>
                     <dt>
-                       Желаемая позиция
+                        Желаемая позиция
                     </dt>
                     <dd id="position">
-                       
-                    </dd>
+
+                    </dd>                   
                 </dl>
+                <label id="status"></label>
             </div>
 
         </div>
+        @*Positions*@
         <div class="col-md-12">
+            <h3>Positions</h3>
+            <div class="list-group" id="positionsList">
 
+            </div>
         </div>
+        @*Positions End*@
     </div>
     <div class="col-md-6">
-        @*<select  id="positionsSelect" class="form-control" asp-items="ViewBag.Applicants" onselect="SelectedIndexChanged(event)">
-
-        </select>*@
-        <div class="list-group">
+        <div class="list-group" id="applicantsList">
             @foreach (var item in Model)
             {
             <a href="#" class="list-group-item waves-light" data-applicantId="@item.ApplicantId">@item.Name  @item.LastName</a>
@@ -106,31 +109,65 @@
 
 @section Scripts{ 
     <script>
-        $('.list-group-item').on('click', function (e) {
+        $('#applicantsList .list-group-item').on('click', function (e) {
             var previous = $(this).closest(".list-group").children(".active");
             previous.removeClass('active'); // previous list-item
             $(e.target).addClass('active'); // activated list-item
-            console.log(e.target);
+           // console.log(e.target.attributes.getNamedItem("data-applicantId"));
+            SelectedApplicantChanged(e.target.attributes.getNamedItem("data-applicantId").value);
         });
-        function SelectedApplicantChanged(id) { 
 
+        function SelectedApplicantChanged(id) {
+            console.log(id+"    LAlsals");
             $.ajax({
                 url: "/Applicants/GetApplicantById",
                 type: "GET",
                 data: { id: id },
-                success: function (data) {
-                    UpdateSelectList(data);
+                success: function (data) {                  
+                    UpdateSelectedApplicantInfo(data);
+                    UpdatePositions(data.pretendedSalary);
                 },
                 error: function (err) { console.log(err); }
             });
         }
-        function UpdateSelectedApplicantInfo(info) {
-            $("#name").val(info.name);
-            $("#lastName").val(info.lastName);
-            $("#phone").val(info.phone);
-            $("#salary").val(info.pretendedSalary);
-            $("#position").val(info.position);
+
+        function UpdatePositions(salary) {
+            $("#positionsList").empty();
+            $.ajax({
+                url: "/Positions/GetPositionsBySalary",
+                type: "GET",
+                data: { salary: salary },
+                success: function (data) {
+                    UpdatePositionsList(data);
+                },
+                error: function (err) { console.log(err); }
+            })
+
         }
 
+        function UpdatePositionsList(data) {
+            console.log(data);
+            $.each(data, function (key, item) {
+                $("#positionsList").append($('<div>', {
+                    text: item.name
+                }).addClass("list-group-item waves-light").attr("data-positionId", item.positionId))
+            });
+        }
+
+        function UpdateSelectedApplicantInfo(info) {
+            $("#name").html(info.name);
+            $("#lastName").html(info.lastName);
+            $("#phone").html(info.phone);
+            $("#salary").html(info.pretendedSalary);
+            $("#position").html(info.position);
+           $("#age").html(info.age);
+            if (info.isEmployed == true) {
+
+                $("#status").html(Трудоустроен);
+            }
+            else {
+                $("#status").html("");
+            }
+        }
     </script>
 }
