@@ -118,7 +118,7 @@
         }
         function SelectedApplicantChanged(id) {
             $.ajax({
-                url: "/Applicants/GetApplicantById",
+                url: "/Employees/GetApplicantById",
                 type: "GET",
                 data: { id: id },
                 success: function (data) {
@@ -146,7 +146,7 @@
             EmployeedBtnChangeState(false);
             $("#positionsList").empty();
             $.ajax({
-                url: "/Positions/GetPositionsBySalary",
+                url: "/Employees/GetPositionsBySalary",
                 type: "GET",
                 data: { salary: salary },
                 success: function (data) {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Tamga_Test_WebApp.Models;
 
 namespace Tamga_Test_WebApp.Controllers
 {
+    [Authorize]
     public class EmployeesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -68,6 +70,51 @@ namespace Tamga_Test_WebApp.Controllers
         private bool ApplicantExists(int id)
         {
             return _context.Applicants.Any(e => e.ApplicantId == id);
+        }
+
+
+        /// <summary>
+        /// Get positions from db where pretendet salary between salary fork min and max
+        /// </summary>
+        /// <param name="salary"></param>
+        /// <returns>Json array(positions)</returns>
+        [HttpGet]
+        public async Task<IActionResult> GetPositionsBySalary(int salary)
+        {
+            var positions = await _context.Positions
+                                         .Where(x => x.SalaryForkMin <= salary && x.SalaryForkMax >= salary)
+                                         //.Include(x => x.Company)
+                                         .ToListAsync();
+            return Json(positions);
+        }
+
+
+        /// <summary>
+        /// Get positions from db where pretendet salary between salary fork min and max
+        /// </summary>
+        /// <param name="salary"></param>
+        /// <returns>Json array(positions)</returns>
+
+        [HttpGet]
+        public async Task<IActionResult> GetApplicantById(int id)
+        {
+            if (ApplicantExists(id))
+            {
+                var applicant = await _context.Applicants.Include(x => x.Position).Include(x => x.Employees).FirstOrDefaultAsync(x => x.ApplicantId == id);
+                var res = new
+                {
+                    applicant.ApplicantId,
+                    applicant.Age,
+                    applicant.LastName,
+                    applicant.Name,
+                    applicant.Phone,
+                    isEmployed = applicant.Employees.Any(),
+                    applicant.PretendedSalary,
+                    position = applicant.Position?.Name
+                };
+                return Json(res);
+            }
+            return NotFound();
         }
 
 
