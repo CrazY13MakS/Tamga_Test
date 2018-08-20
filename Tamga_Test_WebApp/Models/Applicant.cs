@@ -8,29 +8,35 @@ namespace Tamga_Test_WebApp.Models
 {
     public class Applicant
     {
+       
         [Key]
         public int ApplicantId { get; set; }
 
-        [Required]
-        [MinLength(3)]
-        [MaxLength(100)]
+        [Display(Name = "Имя")]
+        [Required(ErrorMessage ="Поле Имя обязательно для ввода")]
+        [MinLength(3, ErrorMessage = "Минимальная длина имени 3 символа")]
+        [MaxLength(100, ErrorMessage = "Максимальная длина имени 100 символов")]
         public String Name { get; set; }
 
-        [Required]
-        [MinLength(3)]
-        [MaxLength(100)]
+        [Display(Name = "Фамилия")]
+        [Required(ErrorMessage ="Поле Фамилия  обязательно для ввода")]
+        [MinLength(3,ErrorMessage ="Минимальная длина фамилии 3 символа")]
+        [MaxLength(100, ErrorMessage = "Максимальная длина фамилии 100 символов")]
         public String LastName { get; set; }
 
-
-        [Required]
-        [Range(18, 60)]
+        [Display(Name = "Возраст")]
+        [Required(ErrorMessage = "Поле Возраст обязательно для ввода")]
+        [Range(18, 60, ErrorMessage ="Возраст должен быть в интервале от 18 до 60")]
         public int Age { get; set; }
 
-        [Required]
-        [RegularExpression(pattern: @"^\+380[0-9]{9}$")]
+        [Display(Name = "Телефон")]
+        [Required(ErrorMessage = "Поле Телефон обязательно для ввода")]
+        [RegularExpression(pattern: @"^\+380[0-9]{9}$", ErrorMessage ="Телефон в формате +380ХХХХХХХХХ")]
         public String Phone { get; set; }
 
-        [Required]
+        [Display(Name = "Ожидаемая зарплата")]
+        [Required(ErrorMessage = "Поле Зарплата обязательно для ввода")]
+        [Range(0,2000000,ErrorMessage = "Число должно быть от 0 до 2 000 000")]
         public int PretendedSalary { get; set; }
 
         public int? PositionId { get; set; }

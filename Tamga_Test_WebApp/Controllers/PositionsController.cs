@@ -82,6 +82,8 @@ namespace Tamga_Test_WebApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CompanyId"] = new SelectList(_context.Companies, "CompanyId", "Address", position.CompanyId);
+            ViewBag.ShowCompanies = _context.Companies.Any();
+
             return View(position);
         }
 
