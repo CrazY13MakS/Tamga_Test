@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Tamga_Test_WebApp.Models.Employee>
+@{
+    ViewData["Title"] = "Трудоустроены";
+}
+
+<h2>Трудоустроены</h2>
+
+<h1>
+    @Model.First().Position.Name
+</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Position)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Applicant)
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Position.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Applicant.Name) 
+                    @Html.DisplayFor(modelItem => item.Applicant.LastName) 
+                    @Html.DisplayFor(modelItem => item.Applicant.PretendedSalary) 
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,50 +1,17 @@
 ﻿@model IEnumerable<Tamga_Test_WebApp.Models.Applicant>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Соискатели";
 }
 
 <h2>Index</h2>
 
-@*<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Company)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Applicant)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Company.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Applicant.LastName)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>*@
 
 
 <div class="container">
     <div class="col-md-6">
         <div class="col-md-12">
-            <div class="aplicantInfo">
+            <div class="aplicantInfo" id="appInfo" data-applicantId="0" data-employeed="false">
                 <dl class="dl-horizontal">
                     <dt>
                         Имя
@@ -81,9 +48,9 @@
                     </dt>
                     <dd id="position">
 
-                    </dd>                   
+                    </dd>
                 </dl>
-                <label id="status"></label>
+                <label id="status" class="applicantstatus"></label>
             </div>
 
         </div>
@@ -100,34 +67,56 @@
         <div class="list-group" id="applicantsList">
             @foreach (var item in Model)
             {
-            <a href="#" class="list-group-item waves-light" data-applicantId="@item.ApplicantId">@item.Name  @item.LastName</a>
-
+                <a href="#" class="list-group-item waves-light" data-applicantId="@item.ApplicantId">@item.Name  @item.LastName</a>
             }
         </div>
     </div>
 </div>
 
-@section Scripts{ 
+<button type="button" class="btn btn-success btn-lg" id="employeedBtn" onclick="EmployeApplicant(event)"> Трудоустроить</button>
+@section Scripts{
     <script>
+
+        $('#employeedBtn').prop('disabled', true);
         $('#applicantsList .list-group-item').on('click', function (e) {
             var previous = $(this).closest(".list-group").children(".active");
             previous.removeClass('active'); // previous list-item
             $(e.target).addClass('active'); // activated list-item
-           // console.log(e.target.attributes.getNamedItem("data-applicantId"));
+            // console.log(e.target.attributes.getNamedItem("data-applicantId"));
             SelectedApplicantChanged(e.target.attributes.getNamedItem("data-applicantId").value);
         });
         $(document).on('click', '#positionsList .list-group-item', function (e) {
             var previous = $(this).closest(".list-group").children(".active");
-            previous.removeClass('active'); // previous list-item
-            $(e.target).addClass('active'); // activated list-item
+            if (previous[0] == e.target) {
+                previous.removeClass('active');
+                EmployeedBtnChangeState(false);
+            }
+            else {
+                previous.removeClass('active'); // previous list-item
+                $(e.target).addClass('active'); // activated list-item
+                EmployeedBtnChangeState(true);
+            }
         });
-        //$('#positionsList .list-group-item').on('click', function (e) {
-        //    var previous = $(this).closest(".list-group").children(".active");
-        //    previous.removeClass('active'); // previous list-item
-        //    $(e.target).addClass('active'); // activated list-item
-        //});
+
+        function EmployeedBtnChangeState(state) {
+
+            console.log($("#appInfo").attr("data-employeed"));
+            console.log(state);
+            var employeed = $.parseJSON($("#appInfo").attr("data-employeed"));
+            console.log(employeed);
+            console.log(employeed == false);
+            if (state === true && employeed == false) {
+                          $("#employeedBtn").addClass("active");
+                    $("#employeedBtn").prop('disabled', false);
+               
+            }
+            else {
+                $("#employeedBtn").removeClass('active');
+                $("#employeedBtn").prop('disabled', true);
+            }
+
+        }
         function SelectedApplicantChanged(id) {
-            console.log(id+"    LAlsals");
             $.ajax({
                 url: "/Applicants/GetApplicantById",
                 type: "GET",
@@ -137,11 +126,24 @@
                     UpdateSelectedApplicantInfo(data);
                     UpdatePositions(data.pretendedSalary);
                 },
-                error: function (err) { console.log("ERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"); console.log(err); }
+                error: function (err) {
+                    $.notify({
+                        title: '<strong>Детальное описание соискателя!</strong>',
+                        message: err.statusText
+                    }, {
+                            animate: {
+                                enter: 'animated fadeInRight',
+                                exit: 'animated fadeOutRight'
+                            },
+                            type: 'warning'
+
+                        }); console.log(err);
+                }
             });
         }
 
         function UpdatePositions(salary) {
+            EmployeedBtnChangeState(false);
             $("#positionsList").empty();
             $.ajax({
                 url: "/Positions/GetPositionsBySalary",
@@ -150,7 +152,20 @@
                 success: function (data) {
                     UpdatePositionsList(data);
                 },
-                error: function (err) { console.log("ERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR POSITION"); console.log(err); }
+                error: function (err) {
+                    $.notify({
+                        title: '<strong>Список позиций!</strong>',
+                        message: err.statusText
+                    }, {
+                            animate: {
+                                enter: 'animated fadeInRight',
+                                exit: 'animated fadeOutRight'
+                            },
+                            type: 'warning'
+
+                        });
+                    console.log(err);
+                }
             })
 
         }
@@ -160,25 +175,72 @@
             $.each(data, function (key, item) {
                 $("#positionsList").append($('<a>', {
                     text: item.name,
-                    href:"#"
+                    href: "#"
                 }).addClass("list-group-item waves-light").attr("data-positionId", item.positionId))
             });
         }
 
         function UpdateSelectedApplicantInfo(info) {
+            $("#appInfo").attr("data-applicantId", info.applicantId);
             $("#name").html(info.name);
             $("#lastName").html(info.lastName);
             $("#phone").html(info.phone);
             $("#salary").html(info.pretendedSalary);
             $("#position").html(info.position);
-           $("#age").html(info.age);
+            $("#age").html(info.age);
+            $("#appInfo").attr("data-employeed", info.isEmployed);
             if (info.isEmployed == true) {
-
-                $("#status").html(Трудоустроен);
+                $("#status").html("Трудоустроен");
             }
             else {
                 $("#status").html("");
             }
+        }
+
+
+
+        function EmployeApplicant(event) {
+
+            var applicantId = $("#appInfo").attr("data-applicantId");
+            var posId = $("#positionsList").children(".active").first().attr("data-positionid");
+            console.log("lsalsld");
+            console.log(applicantId);
+            console.log(posId);
+            console.log($("#positionsList").children(".active").first());
+            $.ajax({
+                url: "/Employees/Employ",
+                type: "POST",
+                data: {
+                    applicantId: applicantId,
+                    positionId: posId
+                },
+                success: function (data) {
+                    $.notify({
+                        title: '<strong>Успех!</strong>',
+                        message: data
+                    }, {
+                            animate: {
+                                enter: 'animated fadeInRight',
+                                exit: 'animated fadeOutRight'
+                            },
+                            type: 'success'
+
+                        });
+                },
+                error: function (err) {
+                    $.notify({
+                        title: '<strong>Ошибка!</strong>',
+                        message: err.statusText
+                    }, {
+                            animate: {
+                                enter: 'animated fadeInRight',
+                                exit: 'animated fadeOutRight'
+                            },
+                            type: 'warning'
+
+                        });
+                }
+            })
         }
     </script>
 }

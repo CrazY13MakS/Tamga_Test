@@ -35,3 +35,8 @@ body {
         display: none;
     }
 }
+
+.applicantstatus{
+    font-size:large;
+    color:chartreuse;
+}

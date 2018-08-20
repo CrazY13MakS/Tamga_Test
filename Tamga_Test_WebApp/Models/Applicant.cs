@@ -39,6 +39,8 @@ namespace Tamga_Test_WebApp.Models
         [Range(0,2000000,ErrorMessage = "Число должно быть от 0 до 2 000 000")]
         public int PretendedSalary { get; set; }
 
+
+        [Display(Name = "Желаемая позиция")]
         public int? PositionId { get; set; }
         public Position Position { get; set; }
 
