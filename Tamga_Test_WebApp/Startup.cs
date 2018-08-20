@@ -37,19 +37,22 @@ namespace Tamga_Test_WebApp
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-
+            // services.AddDefaultIdentity<IdentityUser>()              
+            //     .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>()
+      .AddEntityFrameworkStores<ApplicationDbContext>()
+      .AddDefaultUI()
+      .AddDefaultTokenProviders();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDbContext dbContext)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDbContext dbContext, RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
             dbContext.Database.EnsureDeleted();
            // dbContext.Database.EnsureCreated();
             dbContext.Database.Migrate();
-            DataBaseSeed(dbContext);
+            DataBaseSeed(dbContext,roleManager,userManager);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -75,7 +78,7 @@ namespace Tamga_Test_WebApp
             });
         }
         #region DB Seed
-        private void DataBaseSeed(ApplicationDbContext dbContext)
+        private void DataBaseSeed(ApplicationDbContext dbContext,RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
             /*Companies*/
             dbContext.Companies.Add(new Models.Company() { Address = "Adress company 1", Name = "Company 1", Phone = "+380111111111" });
@@ -104,6 +107,15 @@ namespace Tamga_Test_WebApp
             dbContext.Applicants.Add(applicant_4);
 
             dbContext.SaveChanges();
+
+
+            /*Admin Role*/
+           roleManager.CreateAsync(new IdentityRole("admin"));
+           //
+            userManager.CreateAsync(new IdentityUser("admin@i.ua"),"!QAZ2wsx");
+           //
+            userManager.AddToRoleAsync(userManager.FindByEmailAsync("admin@i.ua").Result, "admin");
+
 
 
 

@@ -50,8 +50,6 @@ namespace Tamga_Test_WebApp.Controllers
                     applicant.PretendedSalary,
                     position = applicant.Position?.Name
                 };
-
-                int a = 122;
                 return  Json(res);
             }
             return NotFound();
