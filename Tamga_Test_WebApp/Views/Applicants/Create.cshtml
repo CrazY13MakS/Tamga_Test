@@ -1,12 +1,12 @@
 ﻿@model Tamga_Test_WebApp.Models.Applicant
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Создание";
 }
 
-<h2>Create</h2>
+<h2>Создание</h2>
 
-<h4>Applicant</h4>
+<h4>Соискатель</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -44,14 +44,14 @@
                 </select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Создать" class="btn btn-default" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Вернуться к списку</a>
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
@@ -108,28 +108,6 @@
                 error: function (err) { console.log(err); }
             })
         }
-            //function UpdateSelectList(control, salary) {
-
-            //    $.ajax({
-            //        url: "/Applicants/GetPositionsBySalary",
-            //        type: "GET",
-            //        data: { salary: salary },
-            //        success: function (data) {
-            //            if (data.length == 0) {
-            //                $("#positionsGroup").hide(333);
-            //            }
-            //            console.log(data);
-            //            $.each(data, function (key, item) {
-            //                console.log(control);
-            //                $(control).append($('<option>', {
-            //                    value: item.positionId,
-            //                    text: item.name
-            //                }));
-            //            });
-            //        },
-            //        error: function (err) { console.log(err); }
-            //    })
-            //}
     </script>
 }
 

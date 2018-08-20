@@ -110,11 +110,12 @@ namespace Tamga_Test_WebApp
 
 
             /*Admin Role*/
+           roleManager.CreateAsync(new IdentityRole("superAdmin"));
            roleManager.CreateAsync(new IdentityRole("admin"));
-           //
+            //
             userManager.CreateAsync(new IdentityUser("admin@i.ua"),"!QAZ2wsx");
            //
-            userManager.AddToRoleAsync(userManager.FindByEmailAsync("admin@i.ua").Result, "admin");
+            userManager.AddToRoleAsync(userManager.FindByEmailAsync("admin@i.ua").Result, "superAdmin");
 
 
 

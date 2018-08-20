@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<Tamga_Test_WebApp.Models.Position>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Позиции";
 }
 
 <h2>Index</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-default" >Создать новую позицию</a>
 </p>
 <table class="table">
     <thead>
@@ -43,9 +43,9 @@
                 @Html.DisplayFor(modelItem => item.Company.Address)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.PositionId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.PositionId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.PositionId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.PositionId">Изменить</a> |
+                <a asp-action="Details" asp-route-id="@item.PositionId">Детали</a> |
+                <a asp-action="Delete" asp-route-id="@item.PositionId">Удалить</a>
             </td>
         </tr>
 }

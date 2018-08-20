@@ -9,7 +9,7 @@ using Tamga_Test_WebApp.ViewModels;
 
 namespace Tamga_Test_WebApp.Controllers
 {
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "superAdmin")]
     public class RolesController : Controller
     {
         RoleManager<IdentityRole> _roleManager;
@@ -19,7 +19,7 @@ namespace Tamga_Test_WebApp.Controllers
             _roleManager = roleManager;
             _userManager = userManager;
         }
-        public IActionResult Index() => View(_roleManager.Roles.ToList());
+        public IActionResult Index(int? page) => View(_userManager.Users.Skip(page.HasValue?page.Value*20:0).Take(20));
 
         public IActionResult Create() => View();
         [HttpPost]
