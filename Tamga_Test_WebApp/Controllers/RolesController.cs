@@ -43,7 +43,7 @@ namespace Tamga_Test_WebApp.Controllers
                     }
                 }
             }
-            return View(name);
+            return View(model:name);
         }
 
         [HttpPost]
