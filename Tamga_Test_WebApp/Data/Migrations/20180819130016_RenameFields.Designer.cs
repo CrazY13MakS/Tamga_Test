@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tamga_Test_WebApp.Data;
 
 namespace Tamga_Test_WebApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180819130016_RenameFields")]
+    partial class RenameFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -239,15 +241,11 @@ namespace Tamga_Test_WebApp.Data.Migrations
                 {
                     b.Property<int>("ApplicantId");
 
-                    b.Property<int>("PositionId");
+                    b.Property<int>("CompanyId");
 
-                    b.Property<int?>("CompanyId");
-
-                    b.HasKey("ApplicantId", "PositionId");
+                    b.HasKey("ApplicantId", "CompanyId");
 
                     b.HasIndex("CompanyId");
-
-                    b.HasIndex("PositionId");
 
                     b.ToTable("Employees");
                 });
@@ -337,11 +335,6 @@ namespace Tamga_Test_WebApp.Data.Migrations
                     b.HasOne("Tamga_Test_WebApp.Models.Company", "Company")
                         .WithMany("Employees")
                         .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("Tamga_Test_WebApp.Models.Position", "Position")
-                        .WithMany("Employees")
-                        .HasForeignKey("PositionId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

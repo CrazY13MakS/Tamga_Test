@@ -12,6 +12,7 @@ namespace Tamga_Test_WebApp.Controllers
     {
         public IActionResult Index()
         {
+            ViewData["Message"] = User.IsInRole("superAdmin");
             return View();
         }
 

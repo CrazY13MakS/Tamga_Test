@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tamga_Test_WebApp.Data;
 
 namespace Tamga_Test_WebApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180818213759_InitModels2")]
+    partial class InitModels2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -205,7 +207,7 @@ namespace Tamga_Test_WebApp.Data.Migrations
 
                     b.Property<int?>("PositionId");
 
-                    b.Property<int>("PretendedSalary");
+                    b.Property<int>("PretendetSalary");
 
                     b.HasKey("ApplicantId");
 
@@ -239,15 +241,14 @@ namespace Tamga_Test_WebApp.Data.Migrations
                 {
                     b.Property<int>("ApplicantId");
 
-                    b.Property<int>("PositionId");
+                    b.Property<int>("CompanyId");
 
-                    b.Property<int?>("CompanyId");
+                    b.HasKey("ApplicantId", "CompanyId");
 
-                    b.HasKey("ApplicantId", "PositionId");
+                    b.HasIndex("ApplicantId")
+                        .IsUnique();
 
                     b.HasIndex("CompanyId");
-
-                    b.HasIndex("PositionId");
 
                     b.ToTable("Employees");
                 });
@@ -322,26 +323,20 @@ namespace Tamga_Test_WebApp.Data.Migrations
             modelBuilder.Entity("Tamga_Test_WebApp.Models.Applicant", b =>
                 {
                     b.HasOne("Tamga_Test_WebApp.Models.Position", "Position")
-                        .WithMany("Applicants")
-                        .HasForeignKey("PositionId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .WithMany()
+                        .HasForeignKey("PositionId");
                 });
 
             modelBuilder.Entity("Tamga_Test_WebApp.Models.Employee", b =>
                 {
                     b.HasOne("Tamga_Test_WebApp.Models.Applicant", "Applicant")
-                        .WithMany("Employees")
-                        .HasForeignKey("ApplicantId")
+                        .WithOne("Employee")
+                        .HasForeignKey("Tamga_Test_WebApp.Models.Employee", "ApplicantId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Tamga_Test_WebApp.Models.Company", "Company")
-                        .WithMany("Employees")
+                        .WithMany()
                         .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("Tamga_Test_WebApp.Models.Position", "Position")
-                        .WithMany("Employees")
-                        .HasForeignKey("PositionId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

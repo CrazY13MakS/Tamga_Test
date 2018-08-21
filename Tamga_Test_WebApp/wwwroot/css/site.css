@@ -35,3 +35,12 @@ body {
         display: none;
     }
 }
+
+.applicantstatus{
+    font-size:large;
+    color:chartreuse;
+}
+
+.actionList li{
+    margin:5px;
+}

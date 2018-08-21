@@ -1,0 +1,24 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+
+@inject SignInManager<IdentityUser>    SignInManager
+
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <li><a asp-area="" asp-controller="Employees" asp-action="Index">Трудоустройство</a></li>      
+    
+
+@if (User.IsInRole("admin"))
+    {
+        <li><a asp-area="" asp-controller="Applicants" asp-action="Index">Соискатели</a></li>
+        <li><a asp-area="" asp-controller="Companies" asp-action="Index">Компании</a></li>
+        <li><a asp-area="" asp-controller="Positions" asp-action="Index">Позиции</a></li>
+    }
+
+    @if (User.IsInRole("superAdmin"))
+    {
+        <li><a asp-area="" asp-controller="Roles" asp-action="Index">Управление ролями</a></li>
+    }
+    
+}
