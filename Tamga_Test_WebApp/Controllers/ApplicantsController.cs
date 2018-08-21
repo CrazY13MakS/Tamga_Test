@@ -11,7 +11,7 @@ using Tamga_Test_WebApp.Models;
 
 namespace Tamga_Test_WebApp.Controllers
 {
-    [Authorize(Roles ="admin")]
+    [Authorize(Roles = "admin")]
     public class ApplicantsController : Controller
     {
         private readonly ApplicationDbContext _context;

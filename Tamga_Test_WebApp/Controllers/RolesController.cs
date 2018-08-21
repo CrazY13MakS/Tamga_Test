@@ -9,7 +9,7 @@ using Tamga_Test_WebApp.ViewModels;
 
 namespace Tamga_Test_WebApp.Controllers
 {
-    [Authorize(Roles = "superAdmin")]
+    [Authorize(Roles ="superAdmin")]
     public class RolesController : Controller
     {
         RoleManager<IdentityRole> _roleManager;
@@ -19,9 +19,12 @@ namespace Tamga_Test_WebApp.Controllers
             _roleManager = roleManager;
             _userManager = userManager;
         }
-        public IActionResult Index(int? page) => View(_userManager.Users.Skip(page.HasValue?page.Value*20:0).Take(20));
+        public IActionResult Index(int? page) => View(_roleManager.Roles.Skip(page.HasValue?page.Value*20:0).Take(20));
 
         public IActionResult Create() => View();
+
+
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> Create(string name)
         {
@@ -47,9 +50,9 @@ namespace Tamga_Test_WebApp.Controllers
         public async Task<IActionResult> Delete(string id)
         {
             IdentityRole role = await _roleManager.FindByIdAsync(id);
-            if (role.Name == "admin")
+            if (role.Name == "superAdmin")
             {
-                return BadRequest("Группу админ нельзя удалить");
+                return BadRequest("Группу суперАдмин нельзя удалить");
             }
             if (role != null)
             {
@@ -60,6 +63,7 @@ namespace Tamga_Test_WebApp.Controllers
 
         public IActionResult UserList() => View(_userManager.Users.ToList());
 
+
         public async Task<IActionResult> Edit(string userId)
         {
 
@@ -67,7 +71,7 @@ namespace Tamga_Test_WebApp.Controllers
             if (user != null)
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
-                var allRoles = _roleManager.Roles.ToList();
+                var allRoles = _roleManager.Roles.Where(x=>x.Name!="superAdmin").ToList();
                 ChangeRolesViewModel model = new ChangeRolesViewModel
                 {
                     UserId = user.Id,
@@ -81,22 +85,18 @@ namespace Tamga_Test_WebApp.Controllers
             return NotFound();
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string userId, List<string> roles)
         {
             IdentityUser user = await _userManager.FindByIdAsync(userId);
 
             if (user != null)
             {
-
+                roles.Remove("superAdmin");
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var allRoles = _roleManager.Roles.ToList();
                 var addedRoles = roles.Except(userRoles);
                 var removedRoles = userRoles.Except(roles);
-                //Сам с себя не можешь убрать админа
-                if (user.Id == _userManager.GetUserId(User))
-                {
-                    roles.Remove("admin");
-                }
                 await _userManager.AddToRolesAsync(user, addedRoles);
                 await _userManager.RemoveFromRolesAsync(user, removedRoles);
                 return RedirectToAction("UserList");

@@ -11,7 +11,6 @@ using Tamga_Test_WebApp.Models;
 
 namespace Tamga_Test_WebApp.Controllers
 {
-
     [Authorize(Roles ="admin")]
     public class PositionsController : Controller
     {

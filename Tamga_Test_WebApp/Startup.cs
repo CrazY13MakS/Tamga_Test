@@ -40,19 +40,20 @@ namespace Tamga_Test_WebApp
             // services.AddDefaultIdentity<IdentityUser>()              
             //     .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddIdentity<IdentityUser, IdentityRole>()
-      .AddEntityFrameworkStores<ApplicationDbContext>()
-      .AddDefaultUI()
-      .AddDefaultTokenProviders();
+             .AddEntityFrameworkStores<ApplicationDbContext>()
+             .AddDefaultUI()
+             .AddDefaultTokenProviders();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            //  services.AddAuthorization(options => options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("admin","superAdmin")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDbContext dbContext, RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
             dbContext.Database.EnsureDeleted();
-           // dbContext.Database.EnsureCreated();
+            // dbContext.Database.EnsureCreated();
             dbContext.Database.Migrate();
-            DataBaseSeed(dbContext,roleManager,userManager);
+            DataBaseSeed(dbContext, roleManager, userManager);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -63,7 +64,7 @@ namespace Tamga_Test_WebApp
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-            
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
@@ -78,7 +79,7 @@ namespace Tamga_Test_WebApp
             });
         }
         #region DB Seed
-        private void DataBaseSeed(ApplicationDbContext dbContext,RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+        private async void DataBaseSeed(ApplicationDbContext dbContext, RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
             /*Companies*/
             dbContext.Companies.Add(new Models.Company() { Address = "Adress company 1", Name = "Company 1", Phone = "+380111111111" });
@@ -94,29 +95,31 @@ namespace Tamga_Test_WebApp
             var position_2 = new Models.Position() { Name = "Position 2", SalaryForkMax = 2120, SalaryForkMin = 800 };
             dbContext.Positions.Add(position_2);
             dbContext.Positions.Add(new Models.Position() { Name = "Position 3", SalaryForkMax = 1111, SalaryForkMin = 455 });
-            dbContext.Positions.Add(new Models.Position() { Name = "Position 4", SalaryForkMax = 123, SalaryForkMin = 11 , Company=company_3});
+            dbContext.Positions.Add(new Models.Position() { Name = "Position 4", SalaryForkMax = 123, SalaryForkMin = 11, Company = company_3 });
 
 
             /*Applicants*/
 
             dbContext.Applicants.Add(new Models.Applicant() { Age = 54, Name = "Applicant 1", LastName = "app 111", Phone = "+380123456789", PretendedSalary = 500 });
             dbContext.Applicants.Add(new Models.Applicant() { Age = 22, Name = "Applicant 2", LastName = "app 222222", Phone = "+380123422222", PretendedSalary = 500 });
-            var applicant_3 = new Models.Applicant() { Age = 32, Name = "Applicant 3", LastName = "app 33333", Phone = "+380123456444", PretendedSalary = 500, Position=position_1 };
+            var applicant_3 = new Models.Applicant() { Age = 32, Name = "Applicant 3", LastName = "app 33333", Phone = "+380123456444", PretendedSalary = 500, Position = position_1 };
             dbContext.Applicants.Add(applicant_3);
-            var applicant_4 = new Models.Applicant() { Age = 18, Name = "Applicant 4", LastName = "app 1444", Phone = "+380124444449", PretendedSalary = 15000, Position=position_1 };
+            var applicant_4 = new Models.Applicant() { Age = 18, Name = "Applicant 4", LastName = "app 1444", Phone = "+380124444449", PretendedSalary = 15000, Position = position_1 };
             dbContext.Applicants.Add(applicant_4);
 
             dbContext.SaveChanges();
 
 
             /*Admin Role*/
-           roleManager.CreateAsync(new IdentityRole("superAdmin"));
-           roleManager.CreateAsync(new IdentityRole("admin"));
+            roleManager.CreateAsync(new IdentityRole("superAdmin"));
+            roleManager.CreateAsync(new IdentityRole("admin"));
+            //     //
+            var user = new IdentityUser("admin@i.ua");
+            userManager.CreateAsync(user, "!QAZ2wsx").Wait();
+            //    //
+            userManager.AddToRoleAsync(user, "superAdmin");
+            userManager.AddToRoleAsync(user, "admin");
             //
-            userManager.CreateAsync(new IdentityUser("admin@i.ua"),"!QAZ2wsx");
-           //
-            userManager.AddToRoleAsync(userManager.FindByEmailAsync("admin@i.ua").Result, "superAdmin");
-
 
 
 

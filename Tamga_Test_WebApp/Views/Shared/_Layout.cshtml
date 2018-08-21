@@ -27,16 +27,17 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Tamga_Test_WebApp</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Tru La La Company</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Employees" asp-action="Index">Employees</a></li>
-                    <li><a asp-area="" asp-controller="Applicants" asp-action="Index">Applicants</a></li>
-                    <li><a asp-area="" asp-controller="Companies" asp-action="Index">Companies</a></li>
-                    <li><a asp-area="" asp-controller="Positions" asp-action="Index">Positions</a></li>
+                    @*<li><a asp-area="" asp-controller="Roles" asp-action="Index">Управление ролями</a></li>
+                    <li><a asp-area="" asp-controller="Applicants" asp-action="Index">Соискатели</a></li>
+                    <li><a asp-area="" asp-controller="Companies" asp-action="Index">Компании</a></li>
+                    <li><a asp-area="" asp-controller="Positions" asp-action="Index">Позиции</a></li>*@
+                    <partial name="_LinksPartial" />
+
                 </ul>
                 <partial name="_LoginPartial" />
             </div>

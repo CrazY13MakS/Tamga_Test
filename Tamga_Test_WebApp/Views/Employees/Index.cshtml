@@ -1,12 +1,16 @@
-﻿@model IEnumerable<Tamga_Test_WebApp.Models.Applicant>
+﻿
+@model IEnumerable<Tamga_Test_WebApp.Models.Applicant>
+
 
 @{
     ViewData["Title"] = "Трудоустройство";
 }
-
 <h2>Трудоустройство</h2>
-
-
+*@if (User.IsInRole("admin"))
+{
+<a asp-area="" asp-controller="Employees" asp-action="Employeed" class="btn btn-primary">Cписок трудоустроенных</a>
+}
+ 
 
 <div class="container">
     <div class="col-md-6">
@@ -106,9 +110,9 @@
             console.log(employeed);
             console.log(employeed == false);
             if (state === true && employeed == false) {
-                          $("#employeedBtn").addClass("active");
-                    $("#employeedBtn").prop('disabled', false);
-               
+                $("#employeedBtn").addClass("active");
+                $("#employeedBtn").prop('disabled', false);
+
             }
             else {
                 $("#employeedBtn").removeClass('active');
